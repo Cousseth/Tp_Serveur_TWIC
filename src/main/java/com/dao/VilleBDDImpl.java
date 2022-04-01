@@ -100,6 +100,7 @@ public class VilleBDDImpl {
 			preparedStatement.setString(7, commune.getLongitude());
 			preparedStatement.executeUpdate();
 			
+			preparedStatement.close();
 			connexion.close();
 		} catch (SQLException e) {
 			return e.getMessage();
@@ -179,6 +180,7 @@ public class VilleBDDImpl {
 			preparedStatement = connexion.prepareStatement(preparedString);
 			preparedStatement.executeUpdate();
 			
+			preparedStatement.close();
 			connexion.close();
 		} catch (SQLException e) {
 			return e.getMessage();
@@ -215,7 +217,7 @@ public class VilleBDDImpl {
 				return "La requête n'est pas correct, merci d'utiliser la clé primaire";
 			}
 			
-			
+			preparedStatement.close();
 			connexion.close();
 		} catch (SQLException e) {
 			return e.getMessage();
