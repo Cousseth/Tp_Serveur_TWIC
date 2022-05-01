@@ -18,6 +18,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.modele.Commune;
 
 public class VilleBDDImpl {
+	public static final String CODE_COMMUNE_INSEE = "Code_commune_INSEE";
+	public static final String NOM_COMMUNE = "Nom_commune";
+	public static final String CODE_POSTAL = "Code_Postal";
+	public static final String LIBELLE_ACHEMINEMENT = "Libelle_acheminement";
+	public static final String LIGNE_5 = "Ligne_5";
+	public static final String LATITUDE = "Latitude";
+	public static final String LONGITUDE = "Longitude";
 
 	public static String getVilles(String codePostals) {
 		Connection connexion = null;
@@ -51,13 +58,13 @@ public class VilleBDDImpl {
 			if(resultat!=null) {
 				while (resultat.next()) {
 					JSONObject json = new JSONObject();
-					json.put("Code_commune_INSEE", resultat.getString("Code_commune_INSEE"));
-					json.put("Nom_commune", resultat.getString("Nom_commune"));
-					json.put("Code_Postal", resultat.getString("Code_Postal"));
-					json.put("Libelle_acheminement", resultat.getString("Libelle_acheminement"));
-					json.put("Ligne_5", resultat.getString("Ligne_5"));
-					json.put("Latitude", resultat.getString("Latitude"));
-					json.put("Longitude", resultat.getString("Longitude"));
+					json.put(CODE_COMMUNE_INSEE, resultat.getString(CODE_COMMUNE_INSEE));
+					json.put(NOM_COMMUNE, resultat.getString(NOM_COMMUNE));
+					json.put(CODE_POSTAL, resultat.getString(CODE_POSTAL));
+					json.put(LIBELLE_ACHEMINEMENT, resultat.getString(LIBELLE_ACHEMINEMENT));
+					json.put(LIGNE_5, resultat.getString(LIGNE_5));
+					json.put(LATITUDE, resultat.getString(LATITUDE));
+					json.put(LONGITUDE, resultat.getString(LONGITUDE));
 					array.put(json);
 				}
 			}
@@ -106,32 +113,34 @@ public class VilleBDDImpl {
 		Object[] listKey = listModif.keySet().toArray();
 		for (Object key : listKey) {
 			switch ((String) key) {
-			case "Nom_commune":
+			case NOM_COMMUNE:
 				commune.setNom_commune(listModif.get(key));
 				break;
 
-			case "Code_commune_INSEE":
+			case CODE_COMMUNE_INSEE:
 				commune.setCode_commune_INSEE(listModif.get(key));
 				break;
 
-			case "Code_postal":
+			case CODE_POSTAL:
 				commune.setCode_postal(listModif.get(key));
 				break;
 
-			case "Libelle_acheminement":
+			case LIBELLE_ACHEMINEMENT:
 				commune.setLibelle_acheminement(listModif.get(key));
 				break;
 
-			case "Ligne_5":
+			case LIGNE_5:
 				commune.setLigne_5(listModif.get(key));
 				break;
 
-			case "Latitude":
+			case LATITUDE:
 				commune.setLatitude(listModif.get(key));
 				break;
 
-			case "Longitude":
+			case LONGITUDE:
 				commune.setLongitude(listModif.get(key));
+				break;
+			default :
 				break;
 			}
 		}
@@ -139,8 +148,7 @@ public class VilleBDDImpl {
 
 	public static Map<String, String> jsonToMap(String requete)
 			throws JsonParseException, JsonMappingException, IOException {
-		Map<String, String> dictionnary = new ObjectMapper().readValue(requete, HashMap.class);
-		return dictionnary;
+		return new ObjectMapper().readValue(requete, HashMap.class);
 	}
 
 	public static String modifVilleBDD(Map<String, String> listModif) {
@@ -154,26 +162,20 @@ public class VilleBDDImpl {
 			String preparedString = "UPDATE ville_france SET";
 			Object[] listKey = listModif.keySet().toArray();
 			for (Object key : listKey) {
-				if (!key.equals("Code_commune_INSEE")) {
+				if (!key.equals(CODE_COMMUNE_INSEE)) {
 					preparedString += ", " + key + "='" + listModif.get(key) + "'";
 				}
 			}
 			preparedString = preparedString.replaceFirst(",", "");
-			preparedString += " WHERE Code_commune_INSEE='" + listModif.get("Code_commune_INSEE") + "';";
+			preparedString += " WHERE Code_commune_INSEE='" + listModif.get(CODE_COMMUNE_INSEE) + "';";
 
 			preparedStatement = connexion.prepareStatement(preparedString);
 			preparedStatement.executeUpdate();
 
+			preparedStatement.close();
 			connexion.close();
 		} catch (SQLException e) {
 			return e.getMessage();
-		} finally {
-			try {
-				connexion.close();
-				preparedStatement.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
 		}
 
 		return "La commune a bien été modifié";
@@ -190,7 +192,7 @@ public class VilleBDDImpl {
 			String preparedString = "DELETE FROM ville_france WHERE ";
 			Object[] listKey = listModif.keySet().toArray();
 			for (Object key : listKey) {
-				if (key.equals("Code_commune_INSEE")) {
+				if (key.equals(CODE_COMMUNE_INSEE)) {
 					preparedString += "" + key + "='" + listModif.get(key) + "';";
 
 				}
@@ -203,16 +205,10 @@ public class VilleBDDImpl {
 				return "La requête n'est pas correct, merci d'utiliser la clé primaire";
 			}
 
-			
+			preparedStatement.close();
+			connexion.close();
 		} catch (SQLException e) {
 			return e.getMessage();
-		} finally {
-			try {
-				connexion.close();
-				preparedStatement.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
 		}
 
 		return "La commune a bien été supprimé";

@@ -1,9 +1,6 @@
 package com.controller;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -31,7 +28,6 @@ public class VilleController {
 		try {
 			return VilleBDDImpl.ajouterVilles(VilleBDDImpl.jsonToMap(requete));
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			return e.getMessage();
 		}
 
