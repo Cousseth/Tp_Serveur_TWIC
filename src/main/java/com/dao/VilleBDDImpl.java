@@ -13,7 +13,6 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.modele.Commune;
@@ -48,19 +47,21 @@ public class VilleBDDImpl {
 
 				}
 			}
-
-			while (resultat.next()) {
-				JSONObject json = new JSONObject();
-				json.put("Code_commune_INSEE", resultat.getString("Code_commune_INSEE"));
-				json.put("Nom_commune", resultat.getString("Nom_commune"));
-				json.put("Code_Postal", resultat.getString("Code_Postal"));
-				json.put("Libelle_acheminement", resultat.getString("Libelle_acheminement"));
-				json.put("Ligne_5", resultat.getString("Ligne_5"));
-				json.put("Latitude", resultat.getString("Latitude"));
-				json.put("Longitude", resultat.getString("Longitude"));
-				array.put(json);
+			
+			if(resultat!=null) {
+				while (resultat.next()) {
+					JSONObject json = new JSONObject();
+					json.put("Code_commune_INSEE", resultat.getString("Code_commune_INSEE"));
+					json.put("Nom_commune", resultat.getString("Nom_commune"));
+					json.put("Code_Postal", resultat.getString("Code_Postal"));
+					json.put("Libelle_acheminement", resultat.getString("Libelle_acheminement"));
+					json.put("Ligne_5", resultat.getString("Ligne_5"));
+					json.put("Latitude", resultat.getString("Latitude"));
+					json.put("Longitude", resultat.getString("Longitude"));
+					array.put(json);
+				}
 			}
-
+			
 			connexion.close();
 		} catch (SQLException e) {
 			return e.getMessage();
@@ -163,10 +164,16 @@ public class VilleBDDImpl {
 			preparedStatement = connexion.prepareStatement(preparedString);
 			preparedStatement.executeUpdate();
 
-			preparedStatement.close();
 			connexion.close();
 		} catch (SQLException e) {
 			return e.getMessage();
+		} finally {
+			try {
+				connexion.close();
+				preparedStatement.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
 
 		return "La commune a bien été modifié";
@@ -196,10 +203,16 @@ public class VilleBDDImpl {
 				return "La requête n'est pas correct, merci d'utiliser la clé primaire";
 			}
 
-			preparedStatement.close();
-			connexion.close();
+			
 		} catch (SQLException e) {
 			return e.getMessage();
+		} finally {
+			try {
+				connexion.close();
+				preparedStatement.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
 
 		return "La commune a bien été supprimé";
