@@ -15,7 +15,7 @@ import com.dao.VilleBDDImpl;
 @RestController
 public class VilleController {
 
-	// TODO : permettre de récupérer TOUTES les infos des villes
+
 	// fonction pour récupérer le contenu de la BDD
 	@RequestMapping(value = "/ville", method = RequestMethod.GET)
 	public String get(@RequestParam(required = false, value = "codePostal") String codePostals) {
@@ -24,7 +24,7 @@ public class VilleController {
 		
 	}
 	
-	// TODO : a modifier pour avoir le json to map
+
 	// fonction pour enregistrer un element dans la BDD
 	@RequestMapping(value = "/ville", method = RequestMethod.POST)
 	public String post(@RequestBody String requete) {
@@ -38,7 +38,7 @@ public class VilleController {
 		
 	}
 	
-	// TODO :
+
 	// fonction pour modifier un element dans la BDD
 	@RequestMapping(value = "/ville", method = RequestMethod.PUT)
 	public String put(@RequestBody String requete) {
@@ -51,7 +51,6 @@ public class VilleController {
 	}
 	
 	
-	// TODO :
 	// fonction pour supprimer un element dans la BDD
 	@RequestMapping(value = "/ville", method = RequestMethod.DELETE)
 	public String delete(@RequestBody String requete) {
